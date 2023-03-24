@@ -1,5 +1,8 @@
+import datetime
 import time
-from random import randrange
+from random import randrange, choice
+
+import pandas as pd
 
 DEFAULT_RANDRANGE = 100
 
@@ -30,3 +33,20 @@ def get_example_sentiment_results():
             }
         }
     }
+
+
+def get_example_sentiment_dataframe(seed_per_item=10, inference_date=datetime.datetime.now()):
+    data = []
+
+    def random_date():
+        return datetime.datetime.now() - datetime.timedelta(days=randrange(DEFAULT_RANDRANGE),
+                                                            minutes=randrange(DEFAULT_RANDRANGE))
+
+    for person in ['prabowo', 'anies', 'ganjar', 'puan']:
+        for i in range(seed_per_item):
+            data.append([person, randrange(10000), random_date(), inference_date, choice([0, 1])])
+
+    df = pd.DataFrame(data, columns=['figure', 'video_id', 'published_at', 'inference_date', 'result'])
+    df = df.sample(frac=1)
+
+    return df
