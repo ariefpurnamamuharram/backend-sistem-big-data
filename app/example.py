@@ -12,7 +12,7 @@ def get_example_sentiment_results():
 
     return {
         'time': time.strftime('%Y-%m-%d %H:%M:%S %Z', time.gmtime(t)),
-        'formattedTime': time.strftime('%b %-d, %Y %H:%M %p', time.gmtime(t)),
+        'formattedTime': time.strftime('%b %-d, %Y %I:%M %p', time.gmtime(t)),
         'message': 'OK',
         'sentiments': {
             'prabowo': {
