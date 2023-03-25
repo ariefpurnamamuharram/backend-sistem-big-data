@@ -56,8 +56,7 @@ async def get_sentiments():
             raise ValueError('Value is not allowed!')
 
         return len(dataframe.loc[(dataframe['figure'] == figure) &
-                                 (dataframe['result'] == result) &
-                                 (dataframe['published_at'] <= datetime.datetime.now())])
+                                 (dataframe['result'] == result)])
 
     t = time.time()
 
