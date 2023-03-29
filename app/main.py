@@ -1,12 +1,10 @@
-import datetime
 import os
 import time
 
 from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-
-from app.example import get_example_sentiment_dataframe
+from pyspark.sql import SparkSession
 
 # Load .env
 load_dotenv()
@@ -46,8 +44,12 @@ async def welcome():
 
 @app.get(f'{os.path.join(BASE_URL["v1"], "sentiments")}')
 async def get_sentiments():
-    # Please replace this line with the production code
-    data = get_example_sentiment_dataframe(seed_per_item=300)
+    # get data from hdfs
+    spark = SparkSession.builder \
+        .master("local[1]") \
+        .appName("SparkByExamples.com") \
+        .getOrCreate()
+    data = spark.read.parquet('hdfs://localhost:9000/youtube_inferred/*.parquet').toPandas()
 
     data = data.drop_duplicates(subset=['video_id'])
 
@@ -56,7 +58,8 @@ async def get_sentiments():
             raise ValueError('Value is not allowed!')
 
         return len(dataframe.loc[(dataframe['figure'] == figure) &
-                                 (dataframe['result'] == result)])
+                                 (dataframe['result'] == result)
+                                 ])
 
     t = time.time()
 
